@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>作曲家 × 血液型 占い</title>
+    
+    <!-- ▼▼▼ CSS（デザイン） ▼▼▼ -->
+    <style>
+        :root {
+            --primary-color: #333;
+            --secondary-color: #f4f4f4;
+            --accent-color: #c59b6d; /* 少しクラシックな色合いに */
+            --card-bg-color: #ffffff;
+            --shadow-color: rgba(0,0,0,0.1);
+        }
+
+        body {
+            font-family: 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--secondary-color);
+            color: var(--primary-color);
+            line-height: 1.7;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 20px 0;
+            border-bottom: 2px solid var(--accent-color);
+        }
+        header h1 {
+            margin: 0;
+            color: var(--accent-color);
+            font-size: 2.2rem;
+            font-weight: normal;
+        }
+        header p {
+            margin-top: 5px;
+            font-size: 1.1rem;
+            color: #666;
+        }
+
+        main {
+            padding: 30px 0;
+        }
+        
+        #input-section {
+            background-color: var(--card-bg-color);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px var(--shadow-color);
+            text-align: center;
+        }
+        #input-section h2 {
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+        .selector-group {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .selector-group select {
+            padding: 12px 15px;
+            font-size: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            cursor: pointer;
+            min-width: 150px;
+        }
+
+        #uranai-button {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        #uranai-button:hover {
+            background-color: #b3895e;
+            transform: translateY(-2px);
+        }
+
+        #result-section {
+            display: none;
+            margin-top: 40px;
+            background-color: var(--card-bg-color);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px var(--shadow-color);
+            animation: fadeIn 0.8s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .result-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 20px;
+            margin-bottom: 20px;
+        }
+        #result-image {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--accent-color);
+        }
+        #result-title {
+            margin: 0;
+            font-size: 1.8rem;
+            font-weight: 500;
+        }
+        .result-content h3 {
+            color: var(--accent-color);
+            margin-top: 25px;
+            margin-bottom: 10px;
+            border-left: 4px solid var(--accent-color);
+            padding-left: 10px;
+            font-size: 1.2rem;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px 0;
+            margin-top: 30px;
+            color: #888;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 600px) {
+            header h1 {
+                font-size: 1.8rem;
+            }
+            #input-section, #result-section {
+                padding: 20px;
+            }
+            .selector-group {
+                flex-direction: column;
+                gap: 15px;
+            }
+            .result-header {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- ▼▼▼ ヘッダーセクション ▼▼▼ -->
+        <header>
+            <h1>作曲家 × 血液型 占い</h1>
+            <p>あなたの中に眠る音楽家の魂を診断します</p>
+        </header>
+
+        <main>
+            <!-- ▼▼▼ 入力セクション ▼▼▼ -->
+            <section id="input-section">
+                <h2>惹かれる作曲家とあなたの血液型を選択してください</h2>
+                <div class="selector-group">
+                    <select id="composer-select" aria-label="作曲家を選択">
+                        <option value="mozart">モーツァルト</option>
+                        <option value="beethoven">ベートーヴェン</option>
+                        <option value="chopin">ショパン</option>
+                        <option value="bach">バッハ</option>
+                    </select>
+                    <select id="blood-select" aria-label="血液型を選択">
+                        <option value="a">A型</option>
+                        <option value="b">B型</option>
+                        <option value="o">O型</option>
+                        <option value="ab">AB型</option>
+                    </select>
+                </div>
+                <button id="uranai-button">診断する</button>
+            </section>
+
+            <!-- ▼▼▼ 結果表示セクション ▼▼▼ -->
+            <section id="result-section">
+                <div class="result-header">
+                    <img id="result-image" src="" alt="作曲家の肖像">
+                    <div>
+                        <p style="margin:0;font-size:1.1rem;">あなたのタイプは...</p>
+                        <h2 id="result-title"></h2>
+                    </div>
+                </div>
+                <div class="result-content">
+                    <h3>あなたの本質と今日の運勢</h3>
+                    <p id="result-text"></p>
+                    <h3>ラッキーアクション</h3>
+                    <p id="result-action"></p>
+                </div>
+            </section>
+        </main>
+        
+        <!-- ▼▼▼ フッターセクション ▼▼▼ -->
+        <footer>
+            <p>© 2023 作曲家占い Ver.2</p>
+        </footer>
+    </div>
+
+
+    <!-- ▼▼▼ JavaScript（アプリの動作） ▼▼▼ -->
+    <script>
+        // --- データ定義 ---
+
+        // 作曲家の基本情報（画像など）
+        const composerInfo = {
+            mozart: {
+                name: "モーツァルト",
+                image: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/2wBDAAUEBAUEAwUEBAUGBgUHBwgGBgYICggICAgICAgKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgr/2wBDAQcHBw0MDRgQEBgUDgYUGBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFbr/wAARCAA8ADwDASIAAhEBAxEB/8QAGwABAQEBAQEBAQEAAAAAAAAAAAcGBQQDAgn/xAAyEAABAwIDBgUDAwUAAAAAAAAAAQIDBAURBhIhADEHExQiQVFhIhUycYEyQlJygYKx/8QAGAEBAQEBAQAAAAAAAAAAAAAAAAECAwT/xAAgEQEBAAIBBQEBAQAAAAAAAAAAAQIRAyExEgRBURMi/9oADAMBAAIRAxEAPwDuIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIJ7hT0r0ZUTxxNe5GMT3tajnO5NanE/Y4I5I5Y2yQva9jhzXMcjmuT8pU7U6xVb1r0yqqo6WeeF1TTR08UUT1Yj1bJI97nOTm5EaxqInBEVy8+W/09+kPSp7hPTyS0rI3yNfHC6RVRrEdhzU9KqiIq8uZy7t31nCcvXz9n+zYfWJ34vL5/s+wA5gAAAAACLVXK2goJa2skeyGFuZyMY57l5Iia1qczlVERE5qqoigSgY/ZvaKk2lp5JaWOWCWF6xzU8yI2WJ6c0cqc0X7pU5KikwAAAdc9sP6fN+F/+J0adcdsf6fN+F/8A4BpX2Z/7qof/AFJ/iQ2E1t9mf+6qH/1J/iQ2IAAAAAAAAAA657Yf0+b8L/APE6NOrW2VtrL7bKijoEjV8UjZZEkkSNVa1zXLhzvLcqInEFL9mf+6qH/ANSf4kNhNbPZ5Z6mz2yeKvYxkr5nSJGx6Pa1qNY1qbzeZVY5eXDI2EAAAAAABwzwxVMElPURMlhe1WvY9qOa5qc0VF5Khg7RsNs7Z61a2goUiqaqukjfK97VeqKr3IquVURVRV5IdAAEREaiIiIickQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAf/9k="
+            },
+            beethoven: {
+                name: "ベートーヴェン",
+                image: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/2wBDAAYEBAUEBAYFBQUGBgYHCQ4JCQgICRINDQoOFRIWFhUSFBQXGI4aHSoeHh4jISEjIjoqKCwsMDIyMjM2Ojk6Ojr/2wBDAQcHBwoIChMKChMoGhYnMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjr/wAARCAA8ADwDASIAAhEBAxEB/8QAGwABAQEBAQEBAQAAAAAAAAAAAAcGBQQDAgH/xAAyEAABAwIEBAQEBgMAAAAAAAAAAQIDBAURBhIhADEHEyJBUTJhcYEUFSNCgpGhscHh/8QAGQEBAQEBAQEAAAAAAAAAAAAAAAMEAgEF/8QAIxEBAAEDAgYDAAAAAAAAAAAAAAECAxEhBBIxQVEiMmFxkf/aAAwDAQACEQMRAD8A7iAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABqGN8RYbwisip8SqVifK1WMRGK9Vci4nYIiZ3tyv9T9jbjxXW0uHwY/S4a2fCZHxtle+ZWzOa5WKrWImSNN6LguZXKnBcTd9h4e8M7Hk/hD6T538u93JPL3Vn5e+X5Y58s+t9Xm1dK21f+S8S/8A2B6O6/wA0R/U+p1U3pjrWc/k59VFuqJ07uY+0fGqXG8Vhlw9zn01JSpTNkcxW7xVfI9VRF3oi50Tgu+Lk8T/AE/f2+mf/d1P/wCbC+H8NfE2I1GIZRvpLVUNcxjZ8nNne5FRz8rVVrWoidmKqruRF3n1D+nj/AHuL/wDqUv8AkO1E02bUVRqnX9+jjVNV25FUacPoAOAYwAAAImJ1lFcY4uw7h6WCPE1TmPnzZGMa57lROq4Ii4Infgu8lQ0r2oYa+t4Zjq4Wq5aKobI/C7kcio1V/vci/Y3Wb1d2imY6zlrs2a7kVxnC+wAAAAAOYe1fCaijw6bFqFjnw02ZtQ1qZVazKqrJj1RFTP8ARUXonWdPHuWKOWGSNksT2q17HtRWuReKKi80U+l27tVu5FUT89Hzd2qblExPzzD2H4rU4XilJiFE5Wy08rZEwvDPoqfVFyX6KR+o6OSNk0T4pWo5j2q1zV6Ki8UU+R+HcI4fw7WSVMGJQqr2ZGxvnY1rEyumCIqZV3IvFex+68dYcyvSjWvjWVVyiYVyn9sWXP745ePcu3q0zE6z4h49m9bpimmc48vB/Z3Uvwnih9BWKrGyNfSy4dFWNciov8Aav8A2dNPLuHOHaHh+nnio5p53zvSSWSZUVznIiJ0REwiIm70PUehzXXqrmYzjDsc0UW6YpnOfUAHMdQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//2Q=="
+            },
+            chopin: {
+                name: "ショパン",
+                image: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/2wBDAAYEBAUEBAYFBQUGBgYHCQ4JCQgICRINDQoOFRIWFhUSFBQXGI4aHSoeHh4jISEjIjoqKCwsMDIyMjM2Ojk6Ojr/wBDAQcHBwoIChMKChMoGhYnMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjr/wAARCAA8ADwDASIAAhEBAxEB/8QAGwAAAgIDAQAAAAAAAAAAAAAAAAcEBgIDBQT/xAAwEAABAwIEAwUHBQAAAAAAAAABAgMEBREABhIhMQcTQVEiMmEUFSNScYGhQmKRscH/xAAbAQACAwEBAQAAAAAAAAAAAAADBAECBQYHAP/EACERAQACAQQCAwEAAAAAAAAAAAABAgMEETEhQRITIlFh/9oADAMBAAIRAxEAPwDu4AAAAAAAAAAAAAAAAAAAAAAAHyrWlCFLWQlKRckmwAHzsV52K8qRk8tC2nEpcbWkpUhQyqSRqCDzBHI2nUuD+zXCMJqcCoLMOnyFaW03dKEqJNgTwA5e7A8Hh4nxXjeLVyVvS6JOmMQmSohtvevOKUQOJNgB0A3+67Jk8xK+fP1mRzI3F7c7W0Jc4p6mY/yJ8pLz3lO2j91LmbRbnx0t1106e2v1mJ47wSjY9QkUmsslxB8zTyR57C+C0H7Eag2I0g2gAAeC9pODwca4DxCh1FJQpyMuRHfAupl9sFSFp7wfsa84OqO7rC5mLcX8P0aChSnlT2ZCso0S20oLWpR6AJBPuB+pgAH4hQSkqUQEgXJJsAP0AAAB8/NjwYbsyY8hphpBccccUEpQkC5JJ0AAg8J8Q0vHOH4eMUFwKjSmwopzAlpY4oWnqkjQ/Q6a4f/Z04lU4TxbW8NvrLUetQw6hvNola2VZbi3ErSpJ9wB+jgAAAAAAAAAAAAAAAAAAAAAAA//Z"
+            },
+            bach: {
+                name: "バッハ",
+                image: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/2wBDAAYEBAUEBAYFBQUGBgYHCQ4JCQgICRINDQoOFRIWFhUSFBQXGI4aHSoeHh4jISEjIjoqKCwsMDIyMjM2Ojk6Ojr/2wBDAQcHBwoIChMKChMoGhYnMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjr/wAARCAA8ADwDASIAAhEBAxEB/8QAGwAAAgMBAQEAAAAAAAAAAAAAAAUIBgQDBwH/xAAvEAABAwIEAwYGAwAAAAAAAAABAgMEBREABhIhMQcTQSIyUWFxFSNCgZEjM2Kh/8QAGAEBAQEBAQAAAAAAAAAAAAAAAAECAwT/xAAgEQEBAAICAgIDAAAAAAAAAAAAAQIRAyESMUEiUWET/9oADAMBAAIRAxEAPwDuIAAAAAAAAAAAAAAAAAAAAAAMZ2jYvBwLh2pYlUqCmYkZSkNjirh0QgepJAP0A4c/Z+oXjvHlbx1aCpmmw5EJJGyy3FltAHmEBY+agn9RAAAsvabhsLGPD9Zwyfch9ham1gXU26nVCx6ggH8w0uNNiS3oU1tTUiO4pl1tQwUqScqgfUEEUA+wD9gAOCfs/1h+j8dSYiFKDVVpLrKwDYKLa0uJJ9wSv/AFQHdYAAAAAAAAAAAAAAAAAAAAAYrtHx6PwvwdW48+sJTGjMFSUDNTi1GyEJHVSiQB6kDhL9n5hUrj+nTFAlUeBLeKiNSTlS2PzWQOxwAAAAAAAAAAAAAAH//Z"
+            }
+        };
+
+        // 16通りの占い結果
+        const fortuneData = {
+            mozart: {
+                a: { text: "あなたは几帳面な天才。自由な発想を論理的に組み立て、完璧な計画を立てるのが得意です。今日はその計画力が冴え渡り、周りを驚かせる成果を出せそう。", action: "3つの異なるジャンルの音楽を聴く" },
+                b: { text: "あなたは究極の自由人。好奇心の赴くままに行動し、誰も思いつかないアイデアで世界を楽しくします。今日は常識にとらわれない行動が、大きな幸運を呼び込みます。", action: "普段通らない道を散歩してみる" },
+                o: { text: "あなたは皆を照らす太陽のような天才。その明るさとカリスマ性で、自然と人の輪の中心に。今日はあなたの笑顔が、チームの士気を最大限に高めるでしょう。", action: "誰かにちょっとしたプレゼントをする" },
+                ab: { text: "あなたはクールな観察者。一歩引いた視点から物事の本質を見抜く、ミステリアスな天才です。今日はあなたの鋭い指摘が、停滞していた物事を動かすきっかけに。", action: "美術館やギャラリーを訪れる" }
+            },
+            beethoven: {
+                a: { text: "あなたは内に情熱を秘めた努力家。目標に向かってコツコツと努力を重ねる真面目な完璧主義者です。今日はその継続力が実を結び、確かな手応えを感じられる日。", action: "部屋の掃除や整理整頓をする" },
+                b: { text: "あなたは魂の革命家。自分の信じる道のためなら、どんな困難にも立ち向かう熱いハートの持ち主。今日はあなたの情熱が周りに伝染し、大きなうねりを起こせそう。", action: "自分の意見を力強く主張してみる" },
+                o: { text: "あなたは頼れる情熱家。仲間を思う気持ちが強く、リーダーとして皆を力強く引っ張っていきます。今日はあなたの力強い言葉が、誰かの背中を押してあげるでしょう。", action: "友人と熱く語り合う" },
+                ab: { text: "あなたは孤高の探求者。複雑な内面と熱い情熱を併せ持ち、独自の哲学を追求します。今日は一人の時間を大切にすることで、内なる声が聴こえてきそう。", action: "日記やブログに自分の考えを書き出す" }
+            },
+            chopin: {
+                a: { text: "あなたは繊細な平和主義者。周りの空気を読み、調和を大切にする優しい心の持ち主。今日はあなたの気配りが、ギスギスした場の空気を和ませるでしょう。", action: "お気に入りの香りのハンドクリームを使う" },
+                b: { text: "あなたは気まぐれなロマンチスト。美しいものや楽しいことに素直に感動できるピュアな感性を持っています。今日は美しい景色や芸術に触れると、心が満たされそう。", action: "花を飾る、または花屋をのぞいてみる" },
+                o: { text: "あなたは親しみやすい詩人。ロマンチックな一面と現実的な感覚を併せ持ち、人に安心感を与えます。今日は親しい友人との会話に、幸運のヒントが隠されています。", action: "カフェでゆっくりと人間観察をする" },
+                ab: { text: "あなたは夢見るリアリスト。繊細な感性とクールな分析力を持ち、自分だけの美しい世界を築きます。今日はあなたのユニークな感性が光り、創造的な活動にツキがありそう。", action: "詩集や美しい写真集を眺める" }
+            },
+            bach: {
+                a: { text: "あなたは偉大なる構成作家。物事を順序立てて考え、揺るぎないシステムを構築するのが得意です。今日はあなたの計画通りに全てが進む、安定した一日になるでしょう。", action: "一日のスケジュールを細かく立てる" },
+                b: { text: "あなたは独創的な職人。伝統を重んじつつも、そこに独自のアイデアを加えるのが上手です。今日はルーティンワークの中に、新しい発見や楽しみを見つけられそう。", action: "いつも使うものに少しアレンジを加える" },
+                o: { text: "あなたは皆の父なる存在。その誠実さと包容力で、多くの人から頼りにされます。今日は誰かの相談に乗ってあげると、あなたの信頼がさらに高まるでしょう。", action: "手料理を誰かに振る舞う" },
+                ab: { text: "あなたは神に愛された建築家。複雑な物事を瞬時に理解し、壮大な構造を描くことができる天才です。今日は難しい問題ほど、あなたの知性が輝きを増すでしょう。", action: "パズルやボードゲームに挑戦する" }
+            }
+        };
+
+        // --- DOM要素の取得 ---
+        const composerSelect = document.getElementById('composer-select');
+        const bloodSelect = document.getElementById('blood-select');
+        const uranaiButton = document.getElementById('uranai-button');
+        const resultSection = document.getElementById('result-section');
+        
+        const resultImage = document.getElementById('result-image');
+        const resultTitle = document.getElementById('result-title');
+        const resultText = document.getElementById('result-text');
+        const resultAction = document.getElementById('result-action');
+
+        // --- イベントリスナー (ボタンクリック時の処理) ---
+        uranaiButton.addEventListener('click', () => {
+            const composer = composerSelect.value;
+            const blood = bloodSelect.value;
+            const bloodTypeText = bloodSelect.options[bloodSelect.selectedIndex].text;
+
+            // 選択された情報に基づいてデータを取得
+            const info = composerInfo[composer];
+            const fortune = fortuneData[composer][blood];
+            
+            // 結果を画面に表示
+            resultImage.src = info.image;
+            resultImage.alt = info.name;
+            resultTitle.textContent = `${info.name} (${bloodTypeText})`;
+            resultText.textContent = fortune.text;
+            resultAction.textContent = fortune.action;
+
+            // 結果セクションを表示し、スクロール
+            resultSection.style.display = 'block';
+            resultSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+
+    </script>
+</body>
+</html>
