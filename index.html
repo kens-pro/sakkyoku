@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>作曲家 × 血液型 占い【究極版】</title>
+    <title>作曲家 × 血液型 占い【日替わり究極版】</title>
     
-    <!-- ▼▼▼ 外部ライブラリ（Chart.js, html2canvas） ▼▼▼ -->
+    <!-- 外部ライブラリ（Chart.js, html2canvas） -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 
-    <!-- ▼▼▼ CSS（デザイン） ▼▼▼ -->
+    <!-- CSS（デザイン） -->
     <style>
         :root {
             --primary-color: #333;
@@ -19,69 +19,25 @@
             --shadow-color: rgba(0,0,0,0.1);
             --locked-color: #ccc;
         }
-
-        body {
-            font-family: 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: var(--secondary-color);
-            color: var(--primary-color);
-            line-height: 1.7;
-        }
-
+        body { font-family: 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif; margin: 0; padding: 0; background-color: var(--secondary-color); color: var(--primary-color); line-height: 1.7; }
         .container { max-width: 700px; margin: 0 auto; padding: 20px; }
-
         header { text-align: center; padding: 20px 0; border-bottom: 2px solid var(--accent-color); }
         header h1 { margin: 0; color: var(--accent-color); font-size: 2.2rem; font-weight: normal; }
         header p { margin-top: 5px; font-size: 1.1rem; color: #666; }
-
         main { padding: 30px 0; }
-        
-        /* 日替わりメッセージ */
-        #daily-message {
-            display: none;
-            background-color: #fffaf0;
-            border: 1px solid var(--accent-color);
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 30px;
-            text-align: center;
-            font-size: 1.1rem;
-            color: #8c6d4e;
-        }
-
-        .card {
-            background-color: var(--card-bg-color);
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px var(--shadow-color);
-            margin-bottom: 30px;
-        }
-
+        #daily-message { display: none; background-color: #fffaf0; border: 1px solid var(--accent-color); border-radius: 8px; padding: 15px; margin-bottom: 30px; text-align: center; font-size: 1.1rem; color: #8c6d4e; }
+        .card { background-color: var(--card-bg-color); padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px var(--shadow-color); margin-bottom: 30px; }
         #input-section { text-align: center; }
         #input-section h2 { margin-top: 0; margin-bottom: 20px; font-weight: 500; }
         .selector-group { display: flex; justify-content: center; align-items: center; gap: 20px; margin-bottom: 30px; }
         .selector-group select { padding: 12px 15px; font-size: 1rem; border: 1px solid #ccc; border-radius: 8px; cursor: pointer; min-width: 150px; }
-
-        .btn {
-            color: white;
-            border: none;
-            padding: 15px 40px;
-            font-size: 1.2rem;
-            font-weight: bold;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: background-color 0.3s, transform 0.2s;
-        }
+        .btn { color: white; border: none; padding: 15px 40px; font-size: 1.2rem; font-weight: bold; border-radius: 50px; cursor: pointer; transition: background-color 0.3s, transform 0.2s; }
         .btn-primary { background-color: var(--accent-color); }
         .btn-primary:hover { background-color: #b3895e; transform: translateY(-2px); }
         .btn-secondary { background-color: #888; font-size: 1rem; padding: 10px 25px; margin-top: 20px; }
         .btn-secondary:hover { background-color: #666; }
-
-
         #result-section { display: none; animation: fadeIn 0.8s ease-in-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-
         .result-header { display: flex; align-items: center; gap: 20px; border-bottom: 1px solid #eee; padding-bottom: 20px; margin-bottom: 20px; }
         #result-image { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 3px solid var(--accent-color); }
         #result-title { margin: 0; font-size: 1.8rem; font-weight: 500; }
@@ -89,8 +45,6 @@
         .result-content a { color: var(--accent-color); text-decoration: none; font-weight: bold; }
         .result-content a:hover { text-decoration: underline; }
         .search-link-text { font-size: 0.9rem; color: #777; margin-top: 5px; }
-
-        /* 履歴セクション */
         #history-section { text-align: center; }
         #history-grid { display: none; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-top: 20px; }
         .history-card { border: 1px solid #eee; border-radius: 8px; padding: 10px; }
@@ -100,9 +54,7 @@
         .history-card.locked p { color: var(--locked-color); }
         .history-card .unlocked-types { font-size: 0.8rem; color: #888; }
         #completion-message { display: none; margin-top: 20px; padding: 15px; background: linear-gradient(135deg, #fffaf0, #fff); border: 2px solid var(--accent-color); border-radius: 8px; }
-
         footer { text-align: center; padding: 20px 0; margin-top: 30px; color: #888; font-size: 0.9rem; }
-        
         @media (max-width: 600px) {
             header h1 { font-size: 1.8rem; }
             .card, #input-section { padding: 20px; }
@@ -126,18 +78,8 @@
             <section id="input-section" class="card">
                 <h2>惹かれる作曲家とあなたの血液型を選択してください</h2>
                 <div class="selector-group">
-                    <select id="composer-select" aria-label="作曲家を選択">
-                        <option value="mozart">モーツァルト</option>
-                        <option value="beethoven">ベートーヴェン</option>
-                        <option value="chopin">ショパン</option>
-                        <option value="bach">バッハ</option>
-                    </select>
-                    <select id="blood-select" aria-label="血液型を選択">
-                        <option value="a">A型</option>
-                        <option value="b">B型</option>
-                        <option value="o">O型</option>
-                        <option value="ab">AB型</option>
-                    </select>
+                    <select id="composer-select" aria-label="作曲家を選択"><option value="mozart">モーツァルト</option><option value="beethoven">ベートーヴェン</option><option value="chopin">ショパン</option><option value="bach">バッハ</option></select>
+                    <select id="blood-select" aria-label="血液型を選択"><option value="a">A型</option><option value="b">B型</option><option value="o">O型</option><option value="ab">AB型</option></select>
                 </div>
                 <button id="uranai-button" class="btn btn-primary">診断する</button>
             </section>
@@ -151,8 +93,12 @@
                     </div>
                 </div>
                 <div class="result-content">
-                    <h3>あなたの本質と今日の運勢</h3>
-                    <p id="result-text"></p>
+                    <!-- ▼▼▼ 本質と今日の運勢を分離 ▼▼▼ -->
+                    <h3>あなたの本質</h3>
+                    <p id="result-base-text"></p>
+                    <h3>今日の運勢</h3>
+                    <p id="result-fortune-text"></p>
+                    
                     <h3>今日の運勢グラフ</h3>
                     <canvas id="result-chart"></canvas>
                     <h3>ラッキーアクション</h3>
@@ -162,7 +108,6 @@
                     <p id="result-search-link" class="search-link-text"></p>
                     <h3>作曲家の豆知識</h3>
                     <p id="result-quote"></p>
-
                     <div style="text-align:center;">
                         <button id="share-button" class="btn btn-secondary">結果を画像で保存</button>
                     </div>
@@ -181,12 +126,10 @@
         </main>
         
         <footer>
-            <p>© 2023 作曲家占い【究極版】</p>
+            <p>© 2023 作曲家占い【日替わり究極版】</p>
         </footer>
     </div>
 
-
-    <!-- ▼▼▼ JavaScript（アプリの動作） ▼▼▼ -->
     <script>
         // --- データ定義 ---
         const composerInfo = {
@@ -198,28 +141,85 @@
 
         const fortuneData = {
             mozart: {
-                a: { text: "几帳面な天才...", action: "3つのジャンルの音楽を聴く", musicTitle: "トルコ行進曲", youtubeId: "p0-U20-S_J8", youtubeSearch: "モーツァルト+トルコ行進曲", scores: { "創造性": 5, "計画性": 5, "対人運": 3, "行動力": 3, "集中力": 4 } },
-                b: { text: "究極の自由人...", action: "普段通らない道を散歩", musicTitle: "アイネ・クライネ・ナハトムジーク", youtubeId: "Qb_jQBgzU-I", youtubeSearch: "モーツァルト+アイネクライネ", scores: { "創造性": 5, "計画性": 1, "対人運": 5, "行動力": 5, "集中力": 2 } },
-                o: { text: "皆を照らす太陽のような天才...", action: "誰かにプレゼントをする", musicTitle: "歌劇『フィガロの結婚』序曲", youtubeId: "blgfb75iG2U", youtubeSearch: "モーツァルト+フィガロの結婚", scores: { "創造性": 4, "計画性": 3, "対人運": 5, "行動力": 4, "集中力": 3 } },
-                ab: { text: "クールな観察者...", action: "美術館を訪れる", musicTitle: "レクイエム", youtubeId: "sPlhKP0nZII", youtubeSearch: "モーツァルト+レクイエム", scores: { "創造性": 4, "計画性": 4, "対人運": 2, "行動力": 2, "集中力": 5 } }
+                a: { 
+                    baseText: "あなたは几帳面な天才。自由な発想を論理的に組み立て、完璧な計画を立てるのが得意です。",
+                    musicTitle: "トルコ行進曲", youtubeId: "p0-U20-S_J8", youtubeSearch: "モーツァルト+トルコ行進曲",
+                    dailyFortunes: [
+                        { fortuneText: "その計画力が冴え渡り、周りを驚かせる成果を出せそう。", action: "3つの異なるジャンルの音楽を聴く", scores: { "創造性": 5, "計画性": 5, "対人運": 3, "行動力": 3, "集中力": 4 } },
+                        { fortuneText: "細部へのこだわりが評価される日。丁寧な仕事が信頼に繋がります。", action: "手帳に短期的な目標を書き出す", scores: { "創造性": 4, "計画性": 5, "対人運": 4, "行動力": 2, "集中力": 5 } }
+                    ]
+                },
+                b: { 
+                    baseText: "あなたは究極の自由人。好奇心の赴くままに行動し、誰も思いつかないアイデアで世界を楽しくします。",
+                    musicTitle: "アイネ・クライネ・ナハトムジーク", youtubeId: "Qb_jQBgzU-I", youtubeSearch: "モーツァルト+アイネクライネ",
+                    dailyFortunes: [
+                        { fortuneText: "常識にとらわれない行動が、大きな幸運を呼び込みます。", action: "普段通らない道を散歩してみる", scores: { "創造性": 5, "計画性": 1, "対人運": 5, "行動力": 5, "集中力": 2 } },
+                        { fortuneText: "あなたのユニークな発言が、場の空気を一気に明るくするでしょう。", action: "面白いと思ったことをすぐに誰かに話す", scores: { "創造性": 5, "計画性": 2, "対人運": 4, "行動力": 5, "集中力": 1 } }
+                    ]
+                },
+                o: { 
+                    baseText: "あなたは皆を照らす太陽のような天才。その明るさとカリスマ性で、自然と人の輪の中心にいます。",
+                    musicTitle: "歌劇『フィガロの結婚』序曲", youtubeId: "blgfb75iG2U", youtubeSearch: "モーツァルト+フィガロの結婚",
+                     dailyFortunes: [
+                        { fortuneText: "あなたの笑顔が、チームの士気を最大限に高めるでしょう。", action: "誰かにちょっとしたプレゼントをする", scores: { "創造性": 4, "計画性": 3, "対人運": 5, "行動力": 4, "集中力": 3 } },
+                        { fortuneText: "リーダーシップを発揮する場面が到来。自信を持って皆を引っ張って。", action: "ランチや飲みに自分から誘ってみる", scores: { "創造性": 3, "計画性": 4, "対人運": 5, "行動力": 5, "集中力": 3 } }
+                    ]
+                },
+                ab: {
+                    baseText: "あなたはクールな観察者。一歩引いた視点から物事の本質を見抜く、ミステリアスな天才です。",
+                    musicTitle: "レクイエム", youtubeId: "sPlhKP0nZII", youtubeSearch: "モーツァルト+レクイエム",
+                    dailyFortunes: [
+                        { fortuneText: "あなたの鋭い指摘が、停滞していた物事を動かすきっかけに。", action: "美術館やギャラリーを訪れる", scores: { "創造性": 4, "計画性": 4, "対人運": 2, "行動力": 2, "集中力": 5 } },
+                        { fortuneText: "一人の時間を持つことで、素晴らしいアイデアが閃きそう。", action: "カフェで静かに読書をする", scores: { "創造性": 5, "計画性": 3, "対人運": 1, "行動力": 2, "集中力": 5 } }
+                    ]
+                 }
             },
             beethoven: {
-                a: { text: "内に情熱を秘めた努力家...", action: "部屋の整理整頓", musicTitle: "ピアノソナタ『月光』", youtubeId: "4Tr0otuiQuU", youtubeSearch: "ベートーヴェン+月光", scores: { "創造性": 3, "計画性": 5, "対人運": 3, "行動力": 3, "集中力": 5 } },
-                b: { text: "魂の革命家...", action: "自分の意見を力強く主張", musicTitle: "交響曲第5番『運命』", youtubeId: "jv2WJMVPQi8", youtubeSearch: "ベートーヴェン+運命", scores: { "創造性": 5, "計画性": 2, "対人運": 4, "行動力": 5, "集中力": 3 } },
-                o: { text: "頼れる情熱家...", action: "友人と熱く語り合う", musicTitle: "交響曲第9番『合唱付き』", youtubeId: "t3217H8JppI", youtubeSearch: "ベートーヴェン+第九", scores: { "創造性": 4, "計画性": 3, "対人運": 5, "行動力": 5, "集中力": 3 } },
-                ab: { text: "孤高の探求者...", action: "日記に自分の考えを書く", musicTitle: "ピアノソナタ『悲愴』", youtubeId: "qqeC9b8d-yE", youtubeSearch: "ベートーヴェン+悲愴", scores: { "創造性": 4, "計画性": 4, "対人運": 2, "行動力": 1, "集中力": 5 } }
+                a: {
+                    baseText: "あなたは内に情熱を秘めた努力家。目標に向かってコツコツと努力を重ねる真面目な完璧主義者です。",
+                    musicTitle: "ピアノソナタ『月光』", youtubeId: "4Tr0otuiQuU", youtubeSearch: "ベートーヴェン+月光",
+                    dailyFortunes: [
+                        { fortuneText: "その継続力が実を結び、確かな手応えを感じられる日。", action: "部屋の掃除や整理整頓をする", scores: { "創造性": 3, "計画性": 5, "対人運": 3, "行動力": 3, "集中力": 5 } },
+                        { fortuneText: "困難な課題も、今日のあなたなら乗り越えられるでしょう。", action: "少し難しい本や記事を読んでみる", scores: { "創造性": 2, "計画性": 5, "対人運": 2, "行動力": 4, "集中力": 5 } }
+                    ]
+                },
+                b: { 
+                    baseText: "あなたは魂の革命家。自分の信じる道のためなら、どんな困難にも立ち向かう熱いハートの持ち主。",
+                    musicTitle: "交響曲第5番『運命』", youtubeId: "jv2WJMVPQi8", youtubeSearch: "ベートーヴェン+運命",
+                    dailyFortunes: [
+                        { fortuneText: "あなたの情熱が周りに伝染し、大きなうねりを起こせそう。", action: "自分の意見を力強く主張してみる", scores: { "創造性": 5, "計画性": 2, "対人運": 4, "行動力": 5, "集中力": 3 } },
+                        { fortuneText: "古いルールを打ち破るアイデアが閃くかも。変化を恐れないで。", action: "いつもと違うやり方を試してみる", scores: { "創造性": 5, "計画性": 1, "対人運": 3, "行動力": 5, "集中力": 2 } }
+                    ]
+                },
+                o: { 
+                    baseText: "あなたは頼れる情熱家。仲間を思う気持ちが強く、リーダーとして皆を力強く引っ張っていきます。",
+                    musicTitle: "交響曲第9番『合唱付き』", youtubeId: "t3217H8JppI", youtubeSearch: "ベートーヴェン+第九",
+                    dailyFortunes: [
+                        { fortuneText: "あなたの力強い言葉が、誰かの背中を押してあげるでしょう。", action: "友人と熱く語り合う", scores: { "創造性": 4, "計画性": 3, "対人運": 5, "行動力": 5, "集中力": 3 } },
+                        { fortuneText: "チームで大きな目標を達成できる日。一体感を大切に。", action: "誰かを褒めて、励ましてあげる", scores: { "創造性": 3, "計画性": 4, "対人運": 5, "行動力": 4, "集中力": 4 } }
+                    ]
+                 },
+                ab: {
+                    baseText: "あなたは孤高の探求者。複雑な内面と熱い情熱を併せ持ち、独自の哲学を追求します。",
+                    musicTitle: "ピアノソナタ『悲愴』", youtubeId: "qqeC9b8d-yE", youtubeSearch: "ベートーヴェン+悲愴",
+                    dailyFortunes: [
+                        { fortuneText: "一人の時間を大切にすることで、内なる声が聴こえてきそう。", action: "日記やブログに自分の考えを書き出す", scores: { "創造性": 4, "計画性": 4, "対人運": 2, "行動力": 1, "集中力": 5 } },
+                        { fortuneText: "物事の真理に近づける日。深い思索があなたを成長させます。", action: "映画を観て感想をまとめる", scores: { "創造性": 5, "計画性": 3, "対人運": 1, "行動力": 2, "集中力": 5 } }
+                    ]
+                 }
             },
+            // Chopin, Bachにも同様の構造を追加 (テキストは簡略化)
             chopin: {
-                a: { text: "繊細な平和主義者...", action: "お気に入りの香りのクリームを使う", musicTitle: "ノクターン第2番", youtubeId: "9E6b3swbnWg", youtubeSearch: "ショパン+ノクターン", scores: { "創造性": 4, "計画性": 4, "対人運": 4, "行動力": 2, "集中力": 4 } },
-                b: { text: "気まぐれなロマンチスト...", action: "花を飾る、または花屋をのぞく", musicTitle: "幻想即興曲", youtubeId: "Gus4dn_K-3I", youtubeSearch: "ショパン+幻想即興曲", scores: { "創造性": 5, "計画性": 1, "対人運": 4, "行動力": 4, "集中力": 2 } },
-                o: { text: "親しみやすい詩人...", action: "カフェで人間観察", musicTitle: "英雄ポロネーズ", youtubeId: "fW0Y3M4EJ4M", youtubeSearch: "ショパン+英雄ポロネーズ", scores: { "創造性": 4, "計画性": 3, "対人運": 5, "行動力": 4, "集中力": 3 } },
-                ab: { text: "夢見るリアリスト...", action: "詩集や美しい写真集を眺める", musicTitle: "別れの曲", youtubeId: "ifKK0_iZ_bI", youtubeSearch: "ショパン+別れの曲", scores: { "創造性": 5, "計画性": 3, "対人運": 2, "行動力": 1, "集中力": 5 } }
+                a: { baseText: "あなたは繊細な平和主義者...", musicTitle: "ノクターン第2番", youtubeId: "9E6b3swbnWg", youtubeSearch: "ショパン+ノクターン", dailyFortunes: [{ fortuneText: "あなたの気配りが場の空気を和ませる。", action: "香りの良いハンドクリームを使う", scores: { "創造性": 4, "計画性": 4, "対人運": 4, "行動力": 2, "集中力": 4 } },{ fortuneText: "芸術的な感性が豊かになる日。", action: "美しい音楽を聴きながらお茶を飲む", scores: { "創造性": 5, "計画性": 3, "対人運": 4, "行動力": 1, "集中力": 5 } }] },
+                b: { baseText: "あなたは気まぐれなロマンチスト...", musicTitle: "幻想即興曲", youtubeId: "Gus4dn_K-3I", youtubeSearch: "ショパン+幻想即興曲", dailyFortunes: [{ fortuneText: "美しいものに触れると心が満たされそう。", action: "花を飾る、または花屋をのぞく", scores: { "創造性": 5, "計画性": 1, "対人運": 4, "行動力": 4, "集中力": 2 } },{ fortuneText: "突然の閃きが幸運を呼ぶ暗示。", action: "思いついたことをすぐメモする", scores: { "創造性": 5, "計画性": 2, "対人運": 3, "行動力": 5, "集中力": 2 } }] },
+                o: { baseText: "あなたは親しみやすい詩人...", musicTitle: "英雄ポロネーズ", youtubeId: "fW0Y3M4EJ4M", youtubeSearch: "ショパン+英雄ポロネーズ", dailyFortunes: [{ fortuneText: "親しい友人との会話に幸運のヒントが。", action: "カフェで人間観察", scores: { "創造性": 4, "計画性": 3, "対人運": 5, "行動力": 4, "集中力": 3 } },{ fortuneText: "あなたの優しさが誰かの心を癒す日。", action: "大切な人に感謝の言葉を伝える", scores: { "創造性": 3, "計画性": 3, "対人運": 5, "行動力": 4, "集中力": 4 } }] },
+                ab: { baseText: "あなたは夢見るリアリスト...", musicTitle: "別れの曲", youtubeId: "ifKK0_iZ_bI", youtubeSearch: "ショパン+別れの曲", dailyFortunes: [{ fortuneText: "あなたのユニークな感性が光りそう。", action: "詩集や美しい写真集を眺める", scores: { "創造性": 5, "計画性": 3, "対人運": 2, "行動力": 1, "集中力": 5 } },{ fortuneText: "空想の世界に浸ると良いアイデアが。", action: "窓の外をぼーっと眺める時間を作る", scores: { "創造性": 5, "計画性": 2, "対人運": 2, "行動力": 1, "集中力": 5 } }] }
             },
             bach: {
-                a: { text: "偉大なる構成作家...", action: "一日のスケジュールを細かく立てる", musicTitle: "G線上のアリア", youtubeId: "GMkmQlfOgeE", youtubeSearch: "バッハ+G線上のアリア", scores: { "創造性": 3, "計画性": 5, "対人運": 3, "行動力": 3, "集中力": 5 } },
-                b: { text: "独創的な職人...", action: "いつも使うものにアレンジを加える", musicTitle: "トッカータとフーガ ニ短調", youtubeId: "ho9rZjlsyYY", youtubeSearch: "バッハ+トッカータとフーガ", scores: { "創造性": 5, "計画性": 3, "対人運": 3, "行動力": 4, "集中力": 4 } },
-                o: { text: "皆の父なる存在...", action: "手料理を誰かに振る舞う", musicTitle: "主よ、人の望みの喜びよ", youtubeId: "Fw_5I1aLg_0", youtubeSearch: "バッハ+主よ人の望みの喜びよ", scores: { "創造性": 3, "計画性": 4, "対人運": 5, "行動力": 4, "集中力": 4 } },
-                ab: { text: "神に愛された建築家...", action: "パズルやボードゲームに挑戦", musicTitle: "無伴奏チェロ組曲第1番", youtubeId: "1prweT95Mo0", youtubeSearch: "バッハ+無伴奏チェロ組曲", scores: { "創造性": 5, "計画性": 5, "対人運": 1, "行動力": 2, "集中力": 5 } }
+                a: { baseText: "あなたは偉大なる構成作家...", musicTitle: "G線上のアリア", youtubeId: "GMkmQlfOgeE", youtubeSearch: "バッハ+G線上のアリア", dailyFortunes: [{ fortuneText: "計画通りに全てが進む安定した一日。", action: "一日のスケジュールを細かく立てる", scores: { "創造性": 3, "計画性": 5, "対人運": 3, "行動力": 3, "集中力": 5 } },{ fortuneText: "積み重ねてきた努力が形になる予感。", action: "タスクリストを作って一つずつ消していく", scores: { "創造性": 2, "計画性": 5, "対人運": 4, "行動力": 4, "集中力": 5 } }] },
+                b: { baseText: "あなたは独創的な職人...", musicTitle: "トッカータとフーガ ニ短調", youtubeId: "ho9rZjlsyYY", youtubeSearch: "バッハ+トッカータとフーガ", dailyFortunes: [{ fortuneText: "ルーティンの中に新しい発見がありそう。", action: "いつも使うものにアレンジを加える", scores: { "創造性": 5, "計画性": 3, "対人運": 3, "行動力": 4, "集中力": 4 } },{ fortuneText: "伝統的なものからヒントを得られる日。", action: "歴史に関する本や映画に触れる", scores: { "創造性": 4, "計画性": 4, "対人運": 3, "行動力": 3, "集中力": 4 } }] },
+                o: { baseText: "あなたは皆の父なる存在...", musicTitle: "主よ、人の望みの喜びよ", youtubeId: "Fw_5I1aLg_0", youtubeSearch: "バッハ+主よ人の望みの喜びよ", dailyFortunes: [{ fortuneText: "誰かの相談に乗ると信頼がさらに高まる。", action: "手料理を誰かに振る舞う", scores: { "創造性": 3, "計画性": 4, "対人運": 5, "行動力": 4, "集中力": 4 } },{ fortuneText: "あなたの包容力が周囲に安心感を与える。", action: "家族や親しい友人と過ごす時間を作る", scores: { "創造性": 3, "計画性": 4, "対人運": 5, "行動力": 3, "集中力": 5 } }] },
+                ab: { baseText: "あなたは神に愛された建築家...", musicTitle: "無伴奏チェロ組曲第1番", youtubeId: "1prweT95Mo0", youtubeSearch: "バッハ+無伴奏チェロ組曲", dailyFortunes: [{ fortuneText: "難しい問題ほどあなたの知性が輝く。", action: "パズルやボードゲームに挑戦", scores: { "創造性": 5, "計画性": 5, "対人運": 1, "行動力": 2, "集中力": 5 } },{ fortuneText: "複雑な物事の構造が見える日。", action: "マインドマップで考えを整理する", scores: { "創造性": 4, "計画性": 5, "対人運": 2, "行動力": 3, "集中力": 5 } }] }
             }
         };
 
@@ -241,8 +241,6 @@
             checkDailyMessage();
             loadHistory();
             renderHistory();
-
-            // --- イベントリスナー設定 ---
             uranaiButton.addEventListener('click', doUranai);
             shareButton.addEventListener('click', downloadResultImage);
             historyToggleButton.addEventListener('click', toggleHistoryView);
@@ -261,11 +259,14 @@
             const info = composerInfo[composer];
             const fortune = fortuneData[composer][blood];
 
-            // 結果表示
-            displayResults(info, fortune, bloodTypeText);
-            renderRadarChart(fortune.scores);
+            // ▼▼▼ 日付に基づいて日替わり運勢を決定 ▼▼▼
+            const day = new Date().getDate(); // 1-31
+            const dailyIndex = (day - 1) % fortune.dailyFortunes.length; // 日付をインデックスに変換
+            const todayFortune = fortune.dailyFortunes[dailyIndex];
+
+            displayResults(info, fortune, todayFortune, bloodTypeText);
+            renderRadarChart(todayFortune.scores);
             
-            // 履歴更新
             saveHistory(composer, blood);
             renderHistory();
             checkCompletion();
@@ -275,12 +276,16 @@
         }
 
         /** 結果を画面に表示 */
-        function displayResults(info, fortune, bloodTypeText) {
+        function displayResults(info, fortune, todayFortune, bloodTypeText) {
             document.getElementById('result-image').src = info.image;
             document.getElementById('result-image').alt = info.name;
             document.getElementById('result-title').textContent = `${info.name} (${bloodTypeText})`;
-            document.getElementById('result-text').textContent = fortune.text;
-            document.getElementById('result-action').textContent = fortune.action;
+            
+            // ▼▼▼ 本質と今日の運勢を分けて表示 ▼▼▼
+            document.getElementById('result-base-text').textContent = fortune.baseText;
+            document.getElementById('result-fortune-text').textContent = todayFortune.fortuneText;
+            document.getElementById('result-action').textContent = todayFortune.action;
+
             document.getElementById('result-quote').textContent = info.quote;
 
             const musicEl = document.getElementById('result-music');
@@ -294,9 +299,7 @@
         /** レーダーチャート描画 */
         function renderRadarChart(scores) {
             const ctx = document.getElementById('result-chart').getContext('2d');
-            if (myChart) {
-                myChart.destroy(); // 既存のチャートがあれば破棄
-            }
+            if (myChart) myChart.destroy();
             myChart = new Chart(ctx, {
                 type: 'radar',
                 data: {
@@ -310,16 +313,7 @@
                     }]
                 },
                 options: {
-                    scales: {
-                        r: {
-                            angleLines: { color: '#ddd' },
-                            grid: { color: '#eee' },
-                            pointLabels: { font: { size: 14 }, color: '#555' },
-                            suggestedMin: 0,
-                            suggestedMax: 5,
-                            ticks: { stepSize: 1 }
-                        }
-                    },
+                    scales: { r: { angleLines: { color: '#ddd' }, grid: { color: '#eee' }, pointLabels: { font: { size: 14 }, color: '#555' }, suggestedMin: 0, suggestedMax: 5, ticks: { stepSize: 1 } } },
                     plugins: { legend: { display: false } }
                 }
             });
@@ -332,15 +326,7 @@
             const originalText = button.textContent;
             button.textContent = '画像生成中...';
             button.disabled = true;
-
-            html2canvas(target, { 
-                backgroundColor: getComputedStyle(document.body).backgroundColor, // 背景色をキャプチャ
-                onclone: (doc) => { // クローンされたDOMでスタイル調整
-                    const clonedResult = doc.getElementById('result-section');
-                    clonedResult.style.animation = 'none'; // アニメーションを無効化
-                    clonedResult.style.boxShadow = 'none'; // 影を無効化
-                }
-            }).then(canvas => {
+            html2canvas(target, { backgroundColor: getComputedStyle(document.body).backgroundColor, onclone: (doc) => { const c = doc.getElementById('result-section'); c.style.animation = 'none'; c.style.boxShadow = 'none'; } }).then(canvas => {
                 const link = document.createElement('a');
                 link.download = 'composer-fortune.png';
                 link.href = canvas.toDataURL('image/png');
@@ -349,90 +335,35 @@
                 button.disabled = false;
             });
         }
-
-        /** 履歴を読み込む */
-        function loadHistory() {
-            const savedHistory = localStorage.getItem('composerFortuneHistory');
-            if (savedHistory) {
-                diagnosisHistory = JSON.parse(savedHistory);
-            }
-        }
-
-        /** 履歴を保存する */
-        function saveHistory(composer, blood) {
-            if (!diagnosisHistory[composer]) {
-                diagnosisHistory[composer] = [];
-            }
-            if (!diagnosisHistory[composer].includes(blood)) {
-                diagnosisHistory[composer].push(blood);
-            }
-            localStorage.setItem('composerFortuneHistory', JSON.stringify(diagnosisHistory));
-        }
-
-        /** 履歴手帳を描画する */
+        
+        // --- 履歴関連の関数 ---
+        function loadHistory() { const s = localStorage.getItem('composerFortuneHistory'); if (s) diagnosisHistory = JSON.parse(s); }
+        function saveHistory(c, b) { if (!diagnosisHistory[c]) diagnosisHistory[c] = []; if (!diagnosisHistory[c].includes(b)) diagnosisHistory[c].push(b); localStorage.setItem('composerFortuneHistory', JSON.stringify(diagnosisHistory)); }
         function renderHistory() {
             historyGrid.innerHTML = '';
-            Object.keys(composerInfo).forEach(composerKey => {
-                const info = composerInfo[composerKey];
-                const unlocked = diagnosisHistory[composerKey] || [];
-                
-                const card = document.createElement('div');
-                card.className = 'history-card';
-                if (unlocked.length === 0) {
-                    card.classList.add('locked');
-                }
-                
-                let bloodTypesHtml = ['a', 'b', 'o', 'ab'].map(b => 
-                    `<span style="color:${unlocked.includes(b) ? 'var(--accent-color)' : 'var(--locked-color)'};">${b.toUpperCase()}</span>`
-                ).join(' ');
-
-                card.innerHTML = `
-                    <img src="${info.image}" alt="${info.name}">
-                    <p>${info.name}</p>
-                    <div class="unlocked-types">${bloodTypesHtml}</div>
-                `;
-                historyGrid.appendChild(card);
+            Object.keys(composerInfo).forEach(k => {
+                const i = composerInfo[k];
+                const u = diagnosisHistory[k] || [];
+                const c = document.createElement('div');
+                c.className = 'history-card';
+                if (u.length === 0) c.classList.add('locked');
+                let bHtml = ['a', 'b', 'o', 'ab'].map(b => `<span style="color:${u.includes(b) ? 'var(--accent-color)' : 'var(--locked-color)'};">${b.toUpperCase()}</span>`).join(' ');
+                c.innerHTML = `<img src="${i.image}" alt="${i.name}"><p>${i.name}</p><div class="unlocked-types">${bHtml}</div>`;
+                historyGrid.appendChild(c);
             });
         }
-        
-        /** 手帳の表示/非表示を切り替え */
-        function toggleHistoryView() {
-            if (historyGrid.style.display === 'grid') {
-                historyGrid.style.display = 'none';
-                historyToggleButton.textContent = '手帳を見る';
-            } else {
-                historyGrid.style.display = 'grid';
-                historyToggleButton.textContent = '手帳を閉じる';
-            }
-        }
-        
-        /** 全タイプコンプリートをチェック */
-        function checkCompletion() {
-            let count = 0;
-            Object.values(diagnosisHistory).forEach(arr => {
-                count += arr.length;
-            });
-            if (count === 16) {
-                completionMessage.style.display = 'block';
-            }
-        }
+        function toggleHistoryView() { if (historyGrid.style.display === 'grid') { historyGrid.style.display = 'none'; historyToggleButton.textContent = '手帳を見る'; } else { historyGrid.style.display = 'grid'; historyToggleButton.textContent = '手帳を閉じる'; } }
+        function checkCompletion() { let c = 0; Object.values(diagnosisHistory).forEach(a => c += a.length); if (c === 16) completionMessage.style.display = 'block'; }
         
         /** 日替わりメッセージをチェック */
         function checkDailyMessage() {
-            const today = new Date();
-            const month = today.getMonth() + 1;
-            const day = today.getDate();
-            let message = '';
-
-            if (month === 1 && day === 27) message = '今日はモーツァルトの誕生日！天才的な閃きがあるかも？';
-            else if (month === 3 && day === 1) message = '今日はショパンの誕生日！詩的な一日を過ごせそう。';
-            else if (month === 3 && day === 31) message = '今日はJ.S.バッハの誕生日！計画がはかどる一日になりそう。';
-            else if (month === 12 && day === 17) message = '今日はベートーヴェンの誕生日！情熱的に過ごしましょう！';
-
-            if (message) {
-                dailyMessageEl.textContent = `✨ ${message} ✨`;
-                dailyMessageEl.style.display = 'block';
-            }
+            const t = new Date(), m = t.getMonth() + 1, d = t.getDate();
+            let msg = '';
+            if (m === 1 && d === 27) msg = '今日はモーツァルトの誕生日！天才的な閃きがあるかも？';
+            else if (m === 3 && d === 1) msg = '今日はショパンの誕生日！詩的な一日を過ごせそう。';
+            else if (m === 3 && d === 31) msg = '今日はJ.S.バッハの誕生日！計画がはかどる一日になりそう。';
+            else if (m === 12 && d === 17) msg = '今日はベートーヴェンの誕生日！情熱的に過ごしましょう！';
+            if (msg) { dailyMessageEl.textContent = `✨ ${msg} ✨`; dailyMessageEl.style.display = 'block'; }
         }
     </script>
 </body>
